@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class MainMenuManager : MonoBehaviour {
+public class MainMenuManagerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -22,9 +22,12 @@ public class MainMenuManager : MonoBehaviour {
     {
         SceneManager.LoadScene("DifficultySelection");
     }
-    public void ClickExit()
+    public void ClickGuideBook()
     {
-        Application.Quit();
+        SceneManager.LoadScene("GuideBook");
+    }
+    public void ClickSettings()
+    {
     }
 
     #endregion

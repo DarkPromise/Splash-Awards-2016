@@ -2,8 +2,8 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
-    public GameObject GuideBook = null;
+public class GameManagerScript : MonoBehaviour {
+    public GameObject Guidebook = null;
     public GameObject CaseFiles = null;
     [Range(0,12)]
     public int m_NumberOfSuspiciousObjects = 0;
@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
-        if (GuideBook == null)
+        if (Guidebook == null)
         {
             Debug.LogAssertion("No Guide Book");
         }
@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour {
                         {
                             if (child.name == hit.collider.gameObject.name)
                             {
-                                if (child.GetComponent<Interactable>().suspicious)
+                                if (child.GetComponent<InteractableScript>().suspicious)
                                 {
                                     // Change this object parent to case file and its sprtie renderer component
                                     m_NumberOfSuspiciousObjectsFound++;
@@ -135,9 +135,9 @@ public class GameManager : MonoBehaviour {
                     else
                     {
                         // Hide guidebook if click outside of guidebook
-                        if (GuideBook.activeSelf == true)
+                        if (Guidebook.activeSelf == true)
                         {
-                            CloseGuideBook();
+                            Guidebook.GetComponent<GuideBookScript>().CloseGuideBook();
                         }
                         // Hide case files if click outside of guidebook
                         if (CaseFiles.activeSelf == true)
@@ -169,22 +169,12 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void CloseGuideBook()
-    {
-        GuideBook.SetActive(false);
-    }
-
     public void CloseCaseFiles()
     {
         CaseFiles.SetActive(false);
     }
 
     #region OnClick Functions
-
-    public void ClickGuideBookButton()
-    {
-        GuideBook.SetActive(true);
-    }
 
     public void ClickCaseFilesButton()
     {
@@ -193,7 +183,7 @@ public class GameManager : MonoBehaviour {
 
     public void ClickQuit()
     {
-        GameController.Instance.CLearSubThemes();
+        GameControllerScript.Instance.CLearSubThemes();
         SceneManager.LoadScene("MainMenu");
     }
 

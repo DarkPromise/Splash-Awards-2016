@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class DifficultySelectionManager : MonoBehaviour {
+public class DifficultySelectionManagerScript : MonoBehaviour {
     
 	// Use this for initialization
 	void Start () {
@@ -20,17 +20,17 @@ public class DifficultySelectionManager : MonoBehaviour {
 
     public void ClickEasy()
     {
-        GameController.Instance.SelectDifficulty(GameController.DIFFICULTY.EASY);
+        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.EASY);
         SceneManager.LoadScene("GameTemplate");
     }
     public void ClickMedium()
     {
-        GameController.Instance.SelectDifficulty(GameController.DIFFICULTY.MEDIUM);
+        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.MEDIUM);
         SceneManager.LoadScene("GameTemplate");
     }
     public void ClickHard()
     {
-        GameController.Instance.SelectDifficulty(GameController.DIFFICULTY.HARD);
+        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.HARD);
         SceneManager.LoadScene("GameTemplate");
     }
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class SplashScreenManager : MonoBehaviour {
+public class SplashScreenManagerScript : MonoBehaviour {
     [Range(0.0f, 10.0f)]
     public float m_TimeCountDown = 0.0f; 
 	// Use this for initialization

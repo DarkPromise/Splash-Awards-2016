@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour {
+public class GameControllerScript : MonoBehaviour {
 
     // Make global
-    public static GameController Instance
+    public static GameControllerScript Instance
     {
         get;
         set;
@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour {
         GameObject InteractableObjects = GameObject.Find("InteractableObjects");
         foreach (Transform child in InteractableObjects.transform)
         {
-            SUB_THEME childSubTheme = child.GetComponent<Interactable>().SubThemeBelongTo;
+            SUB_THEME childSubTheme = child.GetComponent<InteractableScript>().SubThemeBelongTo;
             foreach (SUB_THEME subTheme in m_CurrentSubThemes)
             {
                 if (subTheme == childSubTheme)
