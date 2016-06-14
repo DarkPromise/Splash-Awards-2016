@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ButtonInteraction : MonoBehaviour {
 
-    public void loadScene(int buttons)
+    public void loadScene(string sceneName)
     {
-        Application.LoadLevel(buttons); 
+        SceneManager.LoadScene(sceneName); 
     }
 
     public void endGame()
