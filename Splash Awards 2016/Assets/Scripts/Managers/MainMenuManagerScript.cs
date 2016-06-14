@@ -16,21 +16,6 @@ public class MainMenuManagerScript : MonoBehaviour {
 
     #region Functions
 
-    #region OnClick Functions
-
-    public void ClickPlay()
-    {
-        SceneManager.LoadScene("DifficultySelection");
-    }
-    public void ClickGuideBook()
-    {
-        SceneManager.LoadScene("GuideBook");
-    }
-    public void ClickSettings()
-    {
-    }
-
-    #endregion
 
     #endregion
 }

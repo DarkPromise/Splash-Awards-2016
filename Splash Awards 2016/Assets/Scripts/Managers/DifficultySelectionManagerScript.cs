@@ -18,20 +18,20 @@ public class DifficultySelectionManagerScript : MonoBehaviour {
 
     #region OnClick Functions
 
-    public void ClickEasy()
+    public void ClickDifficulty(string difficulty)
     {
-        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.EASY);
-        SceneManager.LoadScene("GameTemplate");
-    }
-    public void ClickMedium()
-    {
-        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.MEDIUM);
-        SceneManager.LoadScene("GameTemplate");
-    }
-    public void ClickHard()
-    {
-        GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.HARD);
-        SceneManager.LoadScene("GameTemplate");
+        if (difficulty == "Easy")
+        {
+            GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.EASY);
+        }
+        else if (difficulty == "Medium")
+        {
+            GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.MEDIUM);
+        }
+        else if (difficulty == "Hard")
+        {
+            GameControllerScript.Instance.SelectDifficulty(GameControllerScript.DIFFICULTY.HARD);
+        }
     }
 
     #endregion

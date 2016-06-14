@@ -184,7 +184,6 @@ public class GameManagerScript : MonoBehaviour {
     public void ClickQuit()
     {
         GameControllerScript.Instance.CLearSubThemes();
-        SceneManager.LoadScene("MainMenu");
     }
 
     #endregion
