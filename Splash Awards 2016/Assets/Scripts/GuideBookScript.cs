@@ -7,7 +7,6 @@ public class GuideBookScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        CloseGuideBook();
 	}
 	
 	// Update is called once per frame
