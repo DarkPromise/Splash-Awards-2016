@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class GuideScript : MonoBehaviour {
-
+    public bool m_JustStoreGuides  = false;
     public List<string> m_Guides = new List<string>();
     private int m_CurrentPage;
     private int m_numOfGuidesPerPage = 4;
@@ -12,7 +12,6 @@ public class GuideScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         m_CurrentPage = 0;
-        SetNextPage();
 	}
 	
 	// Update is called once per frame
@@ -22,7 +21,7 @@ public class GuideScript : MonoBehaviour {
 
     #region Functions
 
-    private void SetNextPage()
+    public void SetNextPage()
     {
         for (int i = 0; i < m_numOfGuidesPerPage; i++)
         {

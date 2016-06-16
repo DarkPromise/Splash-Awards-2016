@@ -48,21 +48,74 @@ public class GameControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        if(m_CurrentSceneName == null)
+        {
+            m_CurrentSceneName = SceneManager.GetActiveScene().name;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (m_CurrentSceneName == null || m_CurrentSceneName != SceneManager.GetActiveScene().name)
+        if (CheckIfSceneChnaged())
         {
             m_CurrentSceneName = SceneManager.GetActiveScene().name;
-            if (m_CurrentSceneName == "GameTemplate")
+            switch (m_CurrentSceneName)
             {
-                SetGameSceneToCurrentSubThemes();
+                case "GameTemplate":
+                    SetGameSceneToCurrentSubThemes();
+                    break;
+                case "GuideBook":
+                    foreach(Transform child in transform)
+                    {
+                        GuideScript toChange = GameObject.Find("GuideBook").transform.FindChild(child.name).GetComponent<GuideScript>();
+                        toChange.m_Guides = new List<string>(child.GetComponent<GuideScript>().m_Guides);
+                        toChange.SetNextPage();
+                    }
+
+                    break;
+            }
+        }
+        if (m_CurrentSceneName == "GameTemplate")
+        {
+            GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+            switch (gms.m_CurrentState)
+            {
+                case GameManagerScript.CURRENT__STATE.PLAYING:
+                    {
+                        if (gms.m_NumberOfSuspiciousObjects == gms.m_NumberOfSuspiciousObjectsFound)
+                        {
+                            // Load what the victim did wrong
+                            gms.LoadWhatTheVictimHadDoneWrong(m_DifficultySelected);
+                        }
+                    }
+                    break;
+                case GameManagerScript.CURRENT__STATE.VICTIM_DONE_WRONG:
+                    {
+                        if (gms.m_NumberOfWrongObjectsLeft == 0)
+                        {
+                            gms.LoadPrevention(m_DifficultySelected);
+                        }
+                    }
+                    break;
+                case GameManagerScript.CURRENT__STATE.PREVENTION:
+                    {
+                        if (gms.m_NumberOfPreventionsLeft == 0)
+                        {
+                            SceneManager.LoadScene("Mainmenu");
+                        }
+                    }
+                    break;
             }
         }
 	}
 
     #region Functions
+
+    // Check if SceneChanged
+    bool CheckIfSceneChnaged()
+    {
+        return m_CurrentSceneName != SceneManager.GetActiveScene().name;
+    }
 
     // Select and choose random sub themes 
     public void SelectDifficulty(DIFFICULTY difficulty)
@@ -128,6 +181,11 @@ public class GameControllerScript : MonoBehaviour {
                 if (subTheme == childSubTheme)
                 {
                     child.gameObject.SetActive(true);
+                    InteractableScript interactable = child.GetComponent<InteractableScript>();
+                    if(interactable.suspicious)
+                        GameObject.Find("GameManager").GetComponent<GameManagerScript>().m_NumberOfSuspiciousObjects++;
+                    if (interactable.wrong)
+                        GameObject.Find("GameManager").GetComponent<GameManagerScript>().m_NumberOfWrongObjectsLeft++;
                     break;
                 }
             }

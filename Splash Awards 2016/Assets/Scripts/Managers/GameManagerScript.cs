@@ -5,10 +5,25 @@ using UnityEngine.SceneManagement;
 public class GameManagerScript : MonoBehaviour {
     public GameObject Guidebook = null;
     public GameObject CaseFiles = null;
-    [Range(0,12)]
+    [HideInInspector]
     public int m_NumberOfSuspiciousObjects = 0;
+    [HideInInspector]
+    public int m_NumberOfSuspiciousObjectsFound;
+    [HideInInspector]
+    public int m_NumberOfWrongObjectsLeft = 0;
+    [HideInInspector]
+    public int m_NumberOfPreventionsLeft = 0;
     public GameObject Dialogue = null;
     public GameObject InteractableObjects = null;
+
+    public enum CURRENT__STATE
+    {
+        PLAYING = 0,
+        VICTIM_DONE_WRONG,
+        PREVENTION
+    }
+    [HideInInspector]
+    public CURRENT__STATE m_CurrentState = CURRENT__STATE.PLAYING;
 
     private enum DIALOGUE_PHASE
     {
@@ -18,8 +33,6 @@ public class GameManagerScript : MonoBehaviour {
         HIDING
     }
     private DIALOGUE_PHASE m_CurrentDialoguePhase;
-
-    private int m_NumberOfSuspiciousObjectsFound;
 
     void Awake()
     {
@@ -56,7 +69,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             CastRay();
         }
-        UpdateDialogue();
+        //UpdateDialogue();
     }
 
     void UpdateDialogue()
@@ -110,41 +123,80 @@ public class GameManagerScript : MonoBehaviour {
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-                    if (hit)
+                    switch(m_CurrentState)
                     {
-                        // Check each interactable objects whether which object had been hits
-                        foreach (Transform child in InteractableObjects.transform)
-                        {
-                            if (child.name == hit.collider.gameObject.name)
+                        case CURRENT__STATE.PLAYING:
                             {
-                                if (child.GetComponent<InteractableScript>().suspicious)
+                                if (hit)
                                 {
-                                    // Change this object parent to case file and its sprtie renderer component
-                                    m_NumberOfSuspiciousObjectsFound++;
-                                    child.transform.parent = CaseFiles.transform.FindChild("Slots").FindChild("Slot " + m_NumberOfSuspiciousObjectsFound.ToString());
-                                    child.GetComponent<SpriteRenderer>().sortingLayerName = "UI";
-                                    child.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                                    // Set the position of this object in the case file to its slot
-                                    child.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                                    child.localScale = new Vector3(100.0f, 100.0f, 1.0f);
-                                    //DisplayDialogue(true);
+                                    // Check each interactable objects whether which object had been hits
+                                    foreach (Transform child in InteractableObjects.transform)
+                                    {
+                                        if (child.name == hit.collider.gameObject.name)
+                                        {
+                                            if (child.GetComponent<InteractableScript>().suspicious)
+                                            {
+                                                // Change this object parent to case file and its sprtie renderer component
+                                                m_NumberOfSuspiciousObjectsFound++;
+                                                child.transform.parent = CaseFiles.transform.FindChild("Slots").FindChild("Slot " + m_NumberOfSuspiciousObjectsFound.ToString());
+                                                child.GetComponent<SpriteRenderer>().sortingLayerName = "UI";
+                                                child.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                                                child.GetComponent<Collider2D>().enabled = false;
+                                                // Set the position of this object in the case file to its slot
+                                                child.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                                                child.localScale = new Vector3(100.0f, 100.0f, 1.0f);
+
+                                                //DisplayDialogue(true);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Hide guidebook if click outside of guidebook
+                                    if (Guidebook.activeSelf == true)
+                                    {
+                                        Guidebook.GetComponent<GuideBookScript>().CloseGuideBook();
+                                    }
+                                    // Hide case files if click outside of guidebook
+                                    if (CaseFiles.activeSelf == true)
+                                    {
+                                        CaseFiles.GetComponent<CaseFilesScript>().CloseCaseFiles();
+                                    }
                                 }
                             }
-                        }
+                            break;
+                        case CURRENT__STATE.VICTIM_DONE_WRONG:
+                            {
+                                if (CaseFiles.activeSelf == true)
+                                {
+                                    if (hit)
+                                    {
+                                        Debug.Log(hit.collider.gameObject.name);
+                                        // Check each interactable objects whether which object had been hits
+                                        foreach (Transform child in CaseFiles.transform.FindChild("Slots").transform)
+                                        {
+                                            if (child.name == hit.collider.gameObject.name)
+                                            {
+                                                foreach (Transform item in child.transform)
+                                                {
+                                                    if (item.GetComponent<InteractableScript>().wrong)
+                                                    {
+                                                        item.gameObject.SetActive(false);
+                                                        m_NumberOfWrongObjectsLeft--;
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
-                    else
-                    {
-                        // Hide guidebook if click outside of guidebook
-                        if (Guidebook.activeSelf == true)
-                        {
-                            Guidebook.GetComponent<GuideBookScript>().CloseGuideBook();
-                        }
-                        // Hide case files if click outside of guidebook
-                        if (CaseFiles.activeSelf == true)
-                        {
-                            CloseCaseFiles();
-                        }
-                    }
+                    
                 }
                 break;
             case DIALOGUE_PHASE.DISPLAYED:
@@ -169,17 +221,37 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    public void CloseCaseFiles()
+    public void LoadPrevention(GameControllerScript.DIFFICULTY difficulty)
     {
-        CaseFiles.SetActive(false);
+        m_CurrentState = CURRENT__STATE.PREVENTION;
+        //switch (difficulty)
+        //{
+        //    case GameControllerScript.DIFFICULTY.HARD:
+                CaseFiles.GetComponent<CaseFilesScript>().CloseCaseFiles();
+                Guidebook.GetComponent<GuideBookScript>().OpenGuideBook();
+                Guidebook.transform.FindChild("Close").gameObject.SetActive(false);
+        //        break;
+        //    default:
+        //        break;
+        //}
+    }
+
+    public void LoadWhatTheVictimHadDoneWrong(GameControllerScript.DIFFICULTY difficulty)
+    {
+        m_CurrentState = CURRENT__STATE.VICTIM_DONE_WRONG;
+        //switch(difficulty)
+        //{
+        //    case GameControllerScript.DIFFICULTY.HARD:
+                CaseFiles.GetComponent<CaseFilesScript>().OpenCaseFiles();
+                CaseFiles.transform.FindChild("Background").gameObject.GetComponent<Collider2D>().enabled = false;
+                CaseFiles.transform.FindChild("Close").gameObject.SetActive(false);
+        //        break;
+        //    default:
+        //        break;
+        //}
     }
 
     #region OnClick Functions
-
-    public void ClickCaseFilesButton()
-    {
-        CaseFiles.SetActive(true);
-    }
 
     public void ClickQuit()
     {

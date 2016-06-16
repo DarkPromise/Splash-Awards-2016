@@ -1,31 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GuideBookScript : MonoBehaviour {
-
-    public GameObject Guidebook;
+public class CaseFilesScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+
+    }
 
     #region Functions
 
-    public void CloseGuideBook()
+    public void CloseCaseFiles()
     {
-        Guidebook.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     #region OnClick Functions
 
-    public void OpenGuideBook()
+    public void OpenCaseFiles()
     {
-        Guidebook.SetActive(true);
+        gameObject.SetActive(true);
     }
 
     #endregion
