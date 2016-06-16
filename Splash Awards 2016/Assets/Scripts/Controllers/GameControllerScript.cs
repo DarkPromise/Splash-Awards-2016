@@ -101,6 +101,7 @@ public class GameControllerScript : MonoBehaviour {
                     {
                         if (gms.m_NumberOfPreventionsLeft == 0)
                         {
+                            gms.ClickQuit();
                             SceneManager.LoadScene("Mainmenu");
                         }
                     }
