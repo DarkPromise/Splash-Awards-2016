@@ -7,7 +7,8 @@ public class GuideScript : MonoBehaviour {
     public bool m_JustStoreGuides  = false;
     public List<string> m_Guides = new List<string>();
     private int m_CurrentPage;
-    private int m_numOfGuidesPerPage = 4;
+    [HideInInspector]
+    public int m_numOfGuidesPerPage;
 
 	// Use this for initialization
 	void Start () {
@@ -21,15 +22,22 @@ public class GuideScript : MonoBehaviour {
 
     #region Functions
 
+    public void Setup(Transform ChangedTo)
+    {
+        m_Guides = new List<string>(ChangedTo.GetComponent<GuideScript>().m_Guides);
+        m_numOfGuidesPerPage = transform.FindChild("Guides").childCount;
+        SetNextPage();
+    }
+
     public void SetNextPage()
     {
         for (int i = 0; i < m_numOfGuidesPerPage; i++)
         {
             int index = i + m_CurrentPage * m_numOfGuidesPerPage;
             if (index < m_Guides.Count)
-                transform.FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = m_Guides[index];
+                transform.FindChild("Guides").FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = m_Guides[index];
             else
-                transform.FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = "";
+                transform.FindChild("Guides").FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = "";
         }
         m_CurrentPage++;
         transform.FindChild("Next Button").GetComponent<Button>().interactable = CheckIfThereIsNextPage();
@@ -40,7 +48,7 @@ public class GuideScript : MonoBehaviour {
     {
         for (int i = 0; i < m_numOfGuidesPerPage; i++)
         {
-            transform.FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = m_Guides[i + (m_CurrentPage - 2) * m_numOfGuidesPerPage];
+            transform.FindChild("Guides").FindChild("Guide" + (i + 1).ToString()).GetComponent<Text>().text = m_Guides[i + (m_CurrentPage - 2) * m_numOfGuidesPerPage];
         }
         m_CurrentPage--;
         transform.FindChild("Next Button").GetComponent<Button>().interactable = CheckIfThereIsNextPage();

@@ -68,8 +68,7 @@ public class GameControllerScript : MonoBehaviour {
                     foreach(Transform child in transform)
                     {
                         GuideScript toChange = GameObject.Find("GuideBook").transform.FindChild(child.name).GetComponent<GuideScript>();
-                        toChange.m_Guides = new List<string>(child.GetComponent<GuideScript>().m_Guides);
-                        toChange.SetNextPage();
+                        toChange.Setup(child);
                     }
 
                     break;
