@@ -152,19 +152,6 @@ public class GameManagerScript : MonoBehaviour {
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    // Hide guidebook if click outside of guidebook
-                                    if (Guidebook.activeSelf == true)
-                                    {
-                                        Guidebook.GetComponent<GuideBookScript>().CloseGuideBook();
-                                    }
-                                    // Hide case files if click outside of guidebook
-                                    if (CaseFiles.activeSelf == true)
-                                    {
-                                        CaseFiles.GetComponent<CaseFilesScript>().CloseCaseFiles();
-                                    }
-                                }
                             }
                             break;
                         case CURRENT__STATE.VICTIM_DONE_WRONG:

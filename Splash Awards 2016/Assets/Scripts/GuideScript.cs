@@ -9,10 +9,10 @@ public class GuideScript : MonoBehaviour {
     private int m_CurrentPage;
     [HideInInspector]
     public int m_numOfGuidesPerPage;
+    public GameControllerScript.SUB_THEME SubThemeBelongTo = GameControllerScript.SUB_THEME.CYBER_BULLYING;
 
 	// Use this for initialization
 	void Start () {
-        m_CurrentPage = 0;
 	}
 	
 	// Update is called once per frame
@@ -24,6 +24,7 @@ public class GuideScript : MonoBehaviour {
 
     public void Setup(Transform ChangedTo)
     {
+        m_CurrentPage = 0;
         m_Guides = new List<string>(ChangedTo.GetComponent<GuideScript>().m_Guides);
         m_numOfGuidesPerPage = transform.FindChild("Guides").childCount;
         SetNextPage();

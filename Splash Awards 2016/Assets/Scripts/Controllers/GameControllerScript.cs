@@ -70,7 +70,6 @@ public class GameControllerScript : MonoBehaviour {
                         GuideScript toChange = GameObject.Find("GuideBook").transform.FindChild(child.name).GetComponent<GuideScript>();
                         toChange.Setup(child);
                     }
-
                     break;
             }
         }
@@ -112,7 +111,7 @@ public class GameControllerScript : MonoBehaviour {
     #region Functions
 
     // Check if SceneChanged
-    bool CheckIfSceneChnaged()
+    private bool CheckIfSceneChnaged()
     {
         return m_CurrentSceneName != SceneManager.GetActiveScene().name;
     }
@@ -125,7 +124,7 @@ public class GameControllerScript : MonoBehaviour {
     }
 
     // Choose random sub themes 
-    void ChooseRandomSubThemes()
+    private void ChooseRandomSubThemes()
     {
         // Choose random sub themes based on difficulty
         switch (m_DifficultySelected)
@@ -172,6 +171,7 @@ public class GameControllerScript : MonoBehaviour {
 
     public void SetGameSceneToCurrentSubThemes()
     {
+        // Set interactable objects
         GameObject InteractableObjects = GameObject.Find("InteractableObjects");
         foreach (Transform child in InteractableObjects.transform)
         {
@@ -182,14 +182,34 @@ public class GameControllerScript : MonoBehaviour {
                 {
                     child.gameObject.SetActive(true);
                     InteractableScript interactable = child.GetComponent<InteractableScript>();
-                    if(interactable.suspicious)
-                        GameObject.Find("GameManager").GetComponent<GameManagerScript>().m_NumberOfSuspiciousObjects++;
-                    if (interactable.wrong)
-                        GameObject.Find("GameManager").GetComponent<GameManagerScript>().m_NumberOfWrongObjectsLeft++;
+                    if (interactable.suspicious)
+                    {
+                        GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+                        gms.m_NumberOfSuspiciousObjects++;
+                        if (interactable.wrong)
+                            gms.m_NumberOfWrongObjectsLeft++;
+                    }
                     break;
                 }
             }
         }
+        // Set guides
+        GameObject gb = GameObject.Find("GuideBook");
+        foreach (Transform child in transform)
+        {
+            GuideScript toChange = gb.transform.FindChild(child.name).GetComponent<GuideScript>();
+            foreach (SUB_THEME subTheme in m_CurrentSubThemes)
+            {
+                SUB_THEME childSubTheme = child.GetComponent<GuideScript>().SubThemeBelongTo;
+                if (subTheme == childSubTheme)
+                {
+                    toChange.Setup(child);
+                    gb.transform.FindChild(child.name).gameObject.SetActive(true);
+                    break;
+                }
+            }
+        }
+        gb.SetActive(false);
     }
 
     #endregion
