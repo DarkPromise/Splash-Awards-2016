@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class GuideScript : MonoBehaviour {
-    public bool m_JustStoreGuides  = false;
     public List<string> m_Guides = new List<string>();
     private int m_CurrentPage;
     [HideInInspector]

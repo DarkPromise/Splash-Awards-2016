@@ -13,8 +13,6 @@ public class GameManagerScript : MonoBehaviour {
     public int m_NumberOfWrongObjectsLeft = 0;
     [HideInInspector]
     public int m_NumberOfPreventionsLeft = 0;
-    public GameObject Dialogue = null;
-    public GameObject InteractableObjects = null;
 
     public enum CURRENT__STATE
     {
@@ -44,14 +42,6 @@ public class GameManagerScript : MonoBehaviour {
         {
             Debug.LogAssertion("No Case Files");
         }
-        if (Dialogue == null)
-        {
-            Debug.LogAssertion("No Dialogue");
-        }
-        if (InteractableObjects == null)
-        {
-            Debug.LogAssertion("No Interactable Objects");
-        }
     }
 
 	// Use this for initialization
@@ -68,46 +58,6 @@ public class GameManagerScript : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             CastRay();
-        }
-        //UpdateDialogue();
-    }
-
-    void UpdateDialogue()
-    {
-        switch (m_CurrentDialoguePhase)
-        {
-                // Displaying Dialogue
-            case DIALOGUE_PHASE.DISPLAYING:
-                {
-                    foreach (Transform child in Dialogue.transform)
-                    {
-                        Color color = child.GetComponent<UnityEngine.UI.Image>().color;
-                        color.a += Time.deltaTime;
-                        if (color.a >= 1.0f)
-                        {
-                            color.a = 1.0f;
-                            m_CurrentDialoguePhase = DIALOGUE_PHASE.DISPLAYED;
-                        }
-                        child.GetComponent<UnityEngine.UI.Image>().color = color;
-                    }
-                }
-                break;
-                // Hiding Dialogue
-            case DIALOGUE_PHASE.HIDING:
-                {
-                    foreach (Transform child in Dialogue.transform)
-                    {
-                        Color color = child.GetComponent<UnityEngine.UI.Image>().color;
-                        color.a -= Time.deltaTime;
-                        if (color.a <= 0.0f)
-                        {
-                            color.a = 0.0f;
-                            DisplayDialogue(false);
-                        }
-                        child.GetComponent<UnityEngine.UI.Image>().color = color;
-                    }
-                }
-                break;
         }
     }
 
@@ -129,28 +79,7 @@ public class GameManagerScript : MonoBehaviour {
                             {
                                 if (hit)
                                 {
-                                    // Check each interactable objects whether which object had been hits
-                                    foreach (Transform child in InteractableObjects.transform)
-                                    {
-                                        if (child.name == hit.collider.gameObject.name)
-                                        {
-                                            if (child.GetComponent<InteractableScript>().suspicious)
-                                            {
-                                                // Change this object parent to case file and its sprtie renderer component
-                                                m_NumberOfSuspiciousObjectsFound++;
-                                                child.transform.parent = CaseFiles.transform.FindChild("Slots").FindChild("Slot " + m_NumberOfSuspiciousObjectsFound.ToString());
-                                                child.GetComponent<SpriteRenderer>().sortingLayerName = "UI";
-                                                child.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                                                child.GetComponent<Collider2D>().enabled = false;
-                                                // Set the position of this object in the case file to its slot
-                                                child.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                                                child.localScale = new Vector3(100.0f, 100.0f, 1.0f);
-
-                                                //DisplayDialogue(true);
-                                                break;
-                                            }
-                                        }
-                                    }
+                                    
                                 }
                             }
                             break;
@@ -191,20 +120,6 @@ public class GameManagerScript : MonoBehaviour {
                     m_CurrentDialoguePhase = DIALOGUE_PHASE.HIDING;
                 }
                 break;
-        }
-    }
-
-    void DisplayDialogue(bool toShow)
-    {
-        if (toShow == true) 
-        {
-            Dialogue.SetActive(true);
-            m_CurrentDialoguePhase = DIALOGUE_PHASE.DISPLAYING;
-        }
-        else
-        {
-            Dialogue.SetActive(false);
-            m_CurrentDialoguePhase = DIALOGUE_PHASE.NOT_DISLPAYED;
         }
     }
 

@@ -80,28 +80,28 @@ public class GameControllerScript : MonoBehaviour {
             {
                 case GameManagerScript.CURRENT__STATE.PLAYING:
                     {
-                        if (gms.m_NumberOfSuspiciousObjects == gms.m_NumberOfSuspiciousObjectsFound)
-                        {
-                            // Load what the victim did wrong
-                            gms.LoadWhatTheVictimHadDoneWrong(m_DifficultySelected);
-                        }
+                        //if (gms.m_NumberOfSuspiciousObjects == gms.m_NumberOfSuspiciousObjectsFound)
+                        //{
+                        //    // Load what the victim did wrong
+                        //    gms.LoadWhatTheVictimHadDoneWrong(m_DifficultySelected);
+                        //}
                     }
                     break;
                 case GameManagerScript.CURRENT__STATE.VICTIM_DONE_WRONG:
                     {
-                        if (gms.m_NumberOfWrongObjectsLeft == 0)
-                        {
-                            gms.LoadPrevention(m_DifficultySelected);
-                        }
+                        //if (gms.m_NumberOfWrongObjectsLeft == 0)
+                        //{
+                        //    gms.LoadPrevention(m_DifficultySelected);
+                        //}
                     }
                     break;
                 case GameManagerScript.CURRENT__STATE.PREVENTION:
                     {
-                        if (gms.m_NumberOfPreventionsLeft == 0)
-                        {
-                            gms.ClickQuit();
-                            SceneManager.LoadScene("Mainmenu");
-                        }
+                        //if (gms.m_NumberOfPreventionsLeft == 0)
+                        //{
+                        //    gms.ClickQuit();
+                        //    SceneManager.LoadScene("Mainmenu");
+                        //}
                     }
                     break;
             }
@@ -172,27 +172,27 @@ public class GameControllerScript : MonoBehaviour {
     public void SetGameSceneToCurrentSubThemes()
     {
         // Set interactable objects
-        GameObject InteractableObjects = GameObject.Find("InteractableObjects");
-        foreach (Transform child in InteractableObjects.transform)
-        {
-            SUB_THEME childSubTheme = child.GetComponent<InteractableScript>().SubThemeBelongTo;
-            foreach (SUB_THEME subTheme in m_CurrentSubThemes)
-            {
-                if (subTheme == childSubTheme)
-                {
-                    child.gameObject.SetActive(true);
-                    InteractableScript interactable = child.GetComponent<InteractableScript>();
-                    if (interactable.suspicious)
-                    {
-                        GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
-                        gms.m_NumberOfSuspiciousObjects++;
-                        if (interactable.wrong)
-                            gms.m_NumberOfWrongObjectsLeft++;
-                    }
-                    break;
-                }
-            }
-        }
+        //GameObject InteractableObjects = GameObject.Find("InteractableObjects");
+        //foreach (Transform child in InteractableObjects.transform)
+        //{
+        //    SUB_THEME childSubTheme = child.GetComponent<InteractableScript>().SubThemeBelongTo;
+        //    foreach (SUB_THEME subTheme in m_CurrentSubThemes)
+        //    {
+        //        if (subTheme == childSubTheme)
+        //        {
+        //            child.gameObject.SetActive(true);
+        //            InteractableScript interactable = child.GetComponent<InteractableScript>();
+        //            if (interactable.suspicious)
+        //            {
+        //                GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+        //                //gms.m_NumberOfSuspiciousObjects++;
+        //                //if (interactable.wrong)
+        //                //    gms.m_NumberOfWrongObjectsLeft++;
+        //            }
+        //            break;
+        //        }
+        //    }
+        //}
         // Set guides
         GameObject gb = GameObject.Find("GuideBook");
         foreach (Transform child in transform)
