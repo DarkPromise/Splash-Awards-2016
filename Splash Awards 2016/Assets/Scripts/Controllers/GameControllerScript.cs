@@ -171,28 +171,12 @@ public class GameControllerScript : MonoBehaviour {
 
     public void SetGameSceneToCurrentSubThemes()
     {
-        // Set interactable objects
-        //GameObject InteractableObjects = GameObject.Find("InteractableObjects");
-        //foreach (Transform child in InteractableObjects.transform)
-        //{
-        //    SUB_THEME childSubTheme = child.GetComponent<InteractableScript>().SubThemeBelongTo;
-        //    foreach (SUB_THEME subTheme in m_CurrentSubThemes)
-        //    {
-        //        if (subTheme == childSubTheme)
-        //        {
-        //            child.gameObject.SetActive(true);
-        //            InteractableScript interactable = child.GetComponent<InteractableScript>();
-        //            if (interactable.suspicious)
-        //            {
-        //                GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
-        //                //gms.m_NumberOfSuspiciousObjects++;
-        //                //if (interactable.wrong)
-        //                //    gms.m_NumberOfWrongObjectsLeft++;
-        //            }
-        //            break;
-        //        }
-        //    }
-        //}
+        // Create multiple cases
+        for (int i = 0; i < 4; i++)
+        {
+            Case newCase = new Case(m_CurrentSubThemes);
+        }
+
         // Set guides
         GameObject gb = GameObject.Find("GuideBook");
         foreach (Transform child in transform)
