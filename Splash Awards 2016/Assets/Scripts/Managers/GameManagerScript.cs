@@ -157,7 +157,7 @@ public class GameManagerScript : MonoBehaviour {
 
     public void ClickQuit()
     {
-        GameControllerScript.Instance.CLearSubThemes();
+        GameControllerScript.Instance.ClearSubThemes();
     }
 
     #endregion

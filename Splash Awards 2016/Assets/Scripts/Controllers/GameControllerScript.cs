@@ -24,6 +24,12 @@ public class GameControllerScript : MonoBehaviour {
         }
     }
 
+    ~GameControllerScript()
+    {
+        m_lCaseList.Clear();
+        m_lCaseList.TrimExcess();
+    }
+
     /* Data variables */
     // Difficullty
     public enum DIFFICULTY
@@ -39,10 +45,10 @@ public class GameControllerScript : MonoBehaviour {
     {
         CYBER_BULLYING = 0,
         MAKING_FRIENDS_ONLINE,
-        SHARING_PERSONAL_iNFORMATION_ONLINE,
+        SHARING_PERSONAL_INFORMATION_ONLINE,
         CYBER_SECURITY,
         HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION,
-        NUM_OF_SUB_THEMES
+        NUM_OF_SUB_THEMES,
     }
     public List<SUB_THEME> m_CurrentSubThemes = new List<SUB_THEME>();
 
@@ -136,26 +142,12 @@ public class GameControllerScript : MonoBehaviour {
                     m_CurrentSubThemes.Add(randomSubTheme);
                 }
                 break;
-            default:
+            default: 
                 {
-                    // Choose multiple sub themmes for other difficulties
-                    int noOfSubTheme = Random.Range(2, (int)SUB_THEME.NUM_OF_SUB_THEMES);
-                    while (m_CurrentSubThemes.Count != noOfSubTheme)
+                    // Every Available Subtheme
+                    for(int i = 0; i < (int)SUB_THEME.NUM_OF_SUB_THEMES; i++)
                     {
-                        SUB_THEME randomSubTheme;
-                        while (true)
-                        {
-                            randomSubTheme = (SUB_THEME)Random.Range(0, (int)SUB_THEME.NUM_OF_SUB_THEMES - 1);
-                            int i;
-                            for (i = 0; i < m_CurrentSubThemes.Count; i++)
-                            {
-                                if (m_CurrentSubThemes[i] == randomSubTheme)
-                                    break;
-                            }
-                            if (i == m_CurrentSubThemes.Count)
-                                break;
-                        }
-                        m_CurrentSubThemes.Add(randomSubTheme);
+                        m_CurrentSubThemes.Add((SUB_THEME)i);
                     }
                 }
                 break;
@@ -164,17 +156,27 @@ public class GameControllerScript : MonoBehaviour {
         m_CurrentSubThemes.TrimExcess();
     }
     // Clear all the sub themes
-    public void CLearSubThemes()
+    public void ClearSubThemes()
     {
         m_CurrentSubThemes.Clear();
     }
 
+    private List<GameObject> m_lCaseList;
+
     public void SetGameSceneToCurrentSubThemes()
     {
-        // Create multiple cases
-        for (int i = 0; i < 4; i++)
+        // Initialize Case List
+        m_lCaseList = new List<GameObject>();
+
+        // Create multiple case objects
+        for (int i = 0; i < 12; i++)
         {
-            Case newCase = new Case(m_CurrentSubThemes);
+            GameObject newCase = new GameObject();
+            newCase.name = "Case " + i.ToString();
+            newCase.AddComponent<Case>();
+            Case caseInfo = newCase.GetComponent<Case>();
+            caseInfo.Init(m_CurrentSubThemes);
+            m_lCaseList.Add(newCase);
         }
 
         // Set guides
