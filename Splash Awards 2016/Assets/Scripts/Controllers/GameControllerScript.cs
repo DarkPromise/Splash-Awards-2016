@@ -89,6 +89,12 @@ public class GameControllerScript : MonoBehaviour {
                             GameObject.Find("CutsceneManager").GetComponent<CutsceneManager>().SetCutscene(m_currentCase.m_szCutsceneName);
                     }
                     break;
+                case "DialogueScene":
+                    {
+                        if (m_currentCase.m_szCutsceneName != null)
+                            GameObject.Find("DialogueManager").GetComponent<DialogueManager>().SetDialogueScene(m_currentCase.m_szCutsceneName);
+                    }
+                    break;
             }
         }
         if (m_CurrentSceneName == "GameTemplate")
@@ -296,7 +302,6 @@ public class GameControllerScript : MonoBehaviour {
                 {
                     if (reader.IsStartElement("theme"))
                     {
-                        SUB_THEME currentTheme = (SUB_THEME)System.Enum.Parse(typeof(SUB_THEME), reader.GetAttribute("name"));
                         int maxNumOfCases = int.Parse(reader.GetAttribute("numOfCases"));
                         reader.Read();
                         for (int j = 0; j < maxNumOfCases; j++)

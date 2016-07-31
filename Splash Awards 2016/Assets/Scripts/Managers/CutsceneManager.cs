@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
 using UnityEditor;
+using UnityEngine.SceneManagement;
+
 
 public class CutsceneManager : MonoBehaviour
 {
     public GameObject Canvas = null;
+    public List<Sprite> spriteList = new List<Sprite>();
+    private int currentIndex = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -15,7 +19,18 @@ public class CutsceneManager : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Load next image
+            if (++currentIndex < spriteList.Count)
+            {
+                Canvas.GetComponent<Image>().sprite = spriteList[currentIndex];
+            }
+            else
+            {
+                SceneManager.LoadScene("DialogueScene");
+            }
+        }
 	}
 
     public void SetCutscene(string name)
@@ -31,35 +46,19 @@ public class CutsceneManager : MonoBehaviour
                    reader.Read();
                    if (reader.IsStartElement("cutscene") && reader.GetAttribute("name") == name)
                    {
-                       // Load background
-                       Canvas.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("background"));
 
-                       // Load Character Left
-                       Canvas.transform.FindChild("Characters").FindChild("CharacterLeft").GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("characterLeft"));
-
-                       // Load Character Right
-                       Canvas.transform.FindChild("Characters").FindChild("CharacterRight").GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("characterRight"));
-
-                       // Get Dialogues
-                       List<string> dialogueList = new List<string>();
-
-                       int maxNumOfDialogues = int.Parse(reader.GetAttribute("numOfDialogues"));
-                       for (int j = 0; j < maxNumOfDialogues; j++)
+                       int maxNumOfImages = int.Parse(reader.GetAttribute("numOfImages"));
+                       for (int j = 0; j < maxNumOfImages; j++)
                        {
                            reader.Read();
-                           if (reader.IsStartElement("dialogue"))
+                           if (reader.IsStartElement("image"))
                            {
-                               //fill strings
-                               string dialogue = reader.ReadString();
-                               dialogueList.Add(dialogue);
+                               spriteList.Add(AssetDatabase.LoadAssetAtPath<Sprite>(reader.ReadString()));
                            }
                        }
-
-                       // Set Dialogues
-                       Canvas.transform.FindChild("DialogueBox").FindChild("Dialogue").GetComponent<DialogueScript>().textList = dialogueList;
-                       Canvas.transform.FindChild("DialogueBox").FindChild("Dialogue").GetComponent<DialogueScript>().SetDialogue(0);
-
                        reader.Close();
+                       // Load frist image
+                       Canvas.GetComponent<Image>().sprite = spriteList[currentIndex];
                        return;
                    }
                }
