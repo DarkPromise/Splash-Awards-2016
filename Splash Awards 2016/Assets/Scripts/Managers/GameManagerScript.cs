@@ -157,7 +157,26 @@ public class GameManagerScript : MonoBehaviour {
 
     public void ClickQuit()
     {
-        GameControllerScript.Instance.ClearSubThemes();
+        if (GameControllerScript.Instance)
+            GameControllerScript.Instance.ClearInfo();
+    }
+
+    public void ClickSlot(int slotNumber)
+    {
+        // Set cases
+        Transform slot = GameObject.Find("Slot " + slotNumber.ToString()).transform;
+
+        if(slot.childCount > 0)
+        {
+            for (int i = 0; i < GameControllerScript.Instance.m_lCaseList.Count; i++)
+            {
+                if (GameControllerScript.Instance.m_lCaseList[i].name == slot.GetChild(0).name)
+                {
+                    GameControllerScript.Instance.m_currentCase = GameControllerScript.Instance.m_lCaseInfoList[i];
+                    SceneManager.LoadScene("Cutscene");
+                }
+            }
+        }
     }
 
     #endregion

@@ -12,7 +12,8 @@ public class CaseObject {
         CO_SOCIALMEDIA,
         CO_WEBHISTORY,
         CO_DOWNLOADHISTORY,
-        CO_GENERALINFORMATION, 
+        CO_GENERALINFORMATION,
+        NUM_CO_TYPE
     };
 
     private CASE_OBJECT_TYPE m_eType;

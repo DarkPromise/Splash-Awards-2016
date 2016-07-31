@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Xml;
+using UnityEditor;
 
 public class GameControllerScript : MonoBehaviour {
 
@@ -26,8 +29,7 @@ public class GameControllerScript : MonoBehaviour {
 
     ~GameControllerScript()
     {
-        m_lCaseList.Clear();
-        m_lCaseList.TrimExcess();
+        ClearInfo();
     }
 
     /* Data variables */
@@ -51,6 +53,10 @@ public class GameControllerScript : MonoBehaviour {
         NUM_OF_SUB_THEMES,
     }
     public List<SUB_THEME> m_CurrentSubThemes = new List<SUB_THEME>();
+    public List<GameObject> m_lCaseList = new List<GameObject>();
+    public List<Case> m_lCaseInfoList = new List<Case>();
+    private bool m_bFirstTimeLoadCases = true;
+    public Case m_currentCase = null;
 
 	// Use this for initialization
 	void Start () {
@@ -59,7 +65,7 @@ public class GameControllerScript : MonoBehaviour {
             m_CurrentSceneName = SceneManager.GetActiveScene().name;
         }
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
         if (CheckIfSceneChnaged())
@@ -75,6 +81,12 @@ public class GameControllerScript : MonoBehaviour {
                     {
                         GuideScript toChange = GameObject.Find("GuideBook").transform.FindChild(child.name).GetComponent<GuideScript>();
                         toChange.Setup(child);
+                    }
+                    break;
+                case "Cutscene":
+                    {
+                        if (m_currentCase.m_szCutsceneName != null)
+                            GameObject.Find("CutsceneManager").GetComponent<CutsceneManager>().SetCutscene(m_currentCase.m_szCutsceneName);
                     }
                     break;
             }
@@ -112,9 +124,19 @@ public class GameControllerScript : MonoBehaviour {
                     break;
             }
         }
-	}
+    }
 
     #region Functions
+
+    public void ClearInfo()
+    {
+        m_CurrentSubThemes.Clear();
+        m_CurrentSubThemes.TrimExcess();
+        m_lCaseList.Clear();
+        m_lCaseInfoList.TrimExcess();
+        m_lCaseInfoList.Clear();
+        m_lCaseInfoList.TrimExcess();
+    }
 
     // Check if SceneChanged
     private bool CheckIfSceneChnaged()
@@ -132,6 +154,8 @@ public class GameControllerScript : MonoBehaviour {
     // Choose random sub themes 
     private void ChooseRandomSubThemes()
     {
+        m_CurrentSubThemes.Clear();
+        m_CurrentSubThemes.TrimExcess();
         // Choose random sub themes based on difficulty
         switch (m_DifficultySelected)
         {
@@ -154,48 +178,210 @@ public class GameControllerScript : MonoBehaviour {
         }
         // Trim excess spaces
         m_CurrentSubThemes.TrimExcess();
+        // Load all case infos
+        LoadAllCaseInfos();
+        m_bFirstTimeLoadCases = true;
     }
-    // Clear all the sub themes
-    public void ClearSubThemes()
-    {
-        m_CurrentSubThemes.Clear();
-    }
-
-    private List<GameObject> m_lCaseList;
 
     public void SetGameSceneToCurrentSubThemes()
     {
-        // Initialize Case List
-        m_lCaseList = new List<GameObject>();
+        // Set cases
+        Transform slots = GameObject.Find("UI").transform.FindChild("CaseFiles").FindChild("Slots");
 
-        // Create multiple case objects
-        for (int i = 0; i < 12; i++)
+        // Create multiple cases
+        LoadAllCases();
+        if (m_bFirstTimeLoadCases)
         {
-            GameObject newCase = new GameObject();
-            newCase.name = "Case " + i.ToString();
-            newCase.AddComponent<Case>();
-            Case caseInfo = newCase.GetComponent<Case>();
-            caseInfo.Init(m_CurrentSubThemes);
-            m_lCaseList.Add(newCase);
+            for (int i = 1; i <= m_CurrentSubThemes.Count; i++)
+            {
+                // Add Random Case Component To Case
+                AddRandomCase(m_CurrentSubThemes[i - 1], slots.FindChild("Slot " + i.ToString()));
+            }
+            m_bFirstTimeLoadCases = false;
+        }
+        else
+        {
+            int slotNumber = 1;
+            for (int i = 0; i < m_lCaseInfoList.Count; i++)
+            {
+                if (m_lCaseInfoList[i].m_bActivated)
+                    // Add Activated Case
+                    AddCase(i, slots.FindChild("Slot " + (slotNumber++).ToString()));
+            }
         }
 
         // Set guides
-        GameObject gb = GameObject.Find("GuideBook");
+        Transform gb = GameObject.Find("UI").transform.FindChild("GuideBook");
         foreach (Transform child in transform)
         {
-            GuideScript toChange = gb.transform.FindChild(child.name).GetComponent<GuideScript>();
+            GuideScript toChange = gb.FindChild(child.name).GetComponent<GuideScript>();
             foreach (SUB_THEME subTheme in m_CurrentSubThemes)
             {
                 SUB_THEME childSubTheme = child.GetComponent<GuideScript>().SubThemeBelongTo;
                 if (subTheme == childSubTheme)
                 {
                     toChange.Setup(child);
-                    gb.transform.FindChild(child.name).gameObject.SetActive(true);
+                    gb.FindChild(child.name).gameObject.SetActive(true);
                     break;
                 }
             }
         }
-        gb.SetActive(false);
+    }
+
+    void LoadAllCaseInfos()
+    {
+        m_lCaseInfoList.Clear();
+        m_lCaseInfoList.TrimExcess();
+        XmlReader reader = XmlReader.Create("Assets/XML/Case.xml");
+        while (reader.Read())
+        {
+            if (reader.IsStartElement("themes"))
+            {
+                int maxNumOfThemes = int.Parse(reader.GetAttribute("numOfThemes"));
+                reader.Read();
+                for (int i = 0; i < maxNumOfThemes; i++)
+                {
+                    if (reader.IsStartElement("theme"))
+                    {
+                        SUB_THEME currentTheme = (SUB_THEME)System.Enum.Parse(typeof(SUB_THEME), reader.GetAttribute("name"));
+                        int maxNumOfCases = int.Parse(reader.GetAttribute("numOfCases"));
+                        reader.Read();
+                        for (int j = 0; j < maxNumOfCases; j++)
+                        {
+                            if (reader.IsStartElement("case"))
+                            {
+                                // Add Case Info
+                                Case newCaseInfo = new Case();
+                                m_lCaseInfoList.Add(newCaseInfo);
+
+                                // Set case
+                                newCaseInfo.m_theme = currentTheme;
+                                newCaseInfo.m_szCutsceneName = reader.GetAttribute("cutscene");
+
+                                int maxNumOfCaseObjects = int.Parse(reader.GetAttribute("numOfObjects"));
+                                reader.Read();
+                                for (int k = 0; k < maxNumOfCaseObjects; k++)
+                                {
+                                    if (reader.IsStartElement("caseObject"))
+                                    {
+                                        newCaseInfo.AddObject((CaseObject.CASE_OBJECT_TYPE)System.Enum.Parse(typeof(CaseObject.CASE_OBJECT_TYPE), reader.GetAttribute("type")));
+                                        reader.ReadToNextSibling("caseObject");
+                                    }
+                                }
+                                reader.ReadOuterXml();
+                                reader.ReadToNextSibling("case");
+                            }
+                        }
+                        reader.ReadOuterXml();
+                        reader.ReadToNextSibling("theme");
+                    }
+                }
+            }
+            reader.Close();
+            return;
+        }
+    }
+    void LoadAllCases()
+    {
+        m_lCaseList.Clear();
+        m_lCaseList.TrimExcess();
+        XmlReader reader = XmlReader.Create("Assets/XML/Case.xml");
+        while (reader.Read())
+        {
+            if (reader.IsStartElement("themes"))
+            {
+                int maxNumOfThemes = int.Parse(reader.GetAttribute("numOfThemes"));
+                reader.Read();
+                for (int i = 0; i < maxNumOfThemes; i++)
+                {
+                    if (reader.IsStartElement("theme"))
+                    {
+                        SUB_THEME currentTheme = (SUB_THEME)System.Enum.Parse(typeof(SUB_THEME), reader.GetAttribute("name"));
+                        int maxNumOfCases = int.Parse(reader.GetAttribute("numOfCases"));
+                        reader.Read();
+                        for (int j = 0; j < maxNumOfCases; j++)
+                        {
+                            if (reader.IsStartElement("case"))
+                            {
+                                GameObject newCase = new GameObject();
+                                // Add to list
+                                newCase.SetActive(false);
+                                m_lCaseList.Add(newCase);
+
+                                // Set name
+                                newCase.name = reader.GetAttribute("name");
+
+                                // Set general parameter
+                                newCase.AddComponent<Image>();
+                                
+                                reader.ReadOuterXml();
+                                reader.ReadToNextSibling("case");
+                            }
+                        }
+                        reader.ReadOuterXml();
+                        reader.ReadToNextSibling("theme");
+                    }
+                }
+            }
+            reader.Close();
+            return;
+        }
+    }
+
+    private void AddRandomCase(SUB_THEME theme, Transform parentSlot)
+    {
+        int numOfCasesTOChoose = 0;
+        int i = 0;
+        for (i = 0; i < m_lCaseInfoList.Count; i++)
+        {
+            if (m_lCaseInfoList[i].m_theme == theme)
+            {
+                numOfCasesTOChoose++;
+            }
+            else if (numOfCasesTOChoose != 0 && m_lCaseInfoList[i].m_theme != theme)
+            {
+                break;
+            }
+        }
+        i -= numOfCasesTOChoose;
+
+        int randomIndex;
+        Case newCaseInfo = null;
+        int loopAmount = 0;
+        do {
+            randomIndex = Random.Range(i + 1, i + numOfCasesTOChoose);
+            newCaseInfo = m_lCaseInfoList[randomIndex];
+            if (loopAmount++ > 100)
+                break;
+        } while (newCaseInfo.m_bActivated);
+
+        // Set Active
+        newCaseInfo.m_bActivated = true;
+
+        // Add case
+        AddCase(randomIndex, parentSlot);
+    }
+
+    private void AddCase(int index, Transform parentSlot)
+    {
+        GameObject newCase = m_lCaseList[index];
+
+        // Set Active
+        newCase.SetActive(true);
+
+        // Set parent to respective slots
+        newCase.transform.SetParent(parentSlot);
+        // Add image
+        newCase.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Circle.png");
+
+        // Set rect transform
+        RectTransform rectTransform = newCase.GetComponent<RectTransform>();
+        rectTransform.localScale = Vector3.one;
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.sizeDelta = Vector2.zero;
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
     }
 
     #endregion
