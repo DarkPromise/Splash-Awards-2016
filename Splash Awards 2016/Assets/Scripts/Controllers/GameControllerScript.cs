@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Xml;
-using UnityEditor;
+using System.IO;
 
 public class GameControllerScript : MonoBehaviour {
 
@@ -57,6 +57,7 @@ public class GameControllerScript : MonoBehaviour {
     public List<Case> m_lCaseInfoList = new List<Case>();
     private bool m_bFirstTimeLoadCases = true;
     public Case m_currentCase = null;
+    private int m_nCasesActivated = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -95,41 +96,47 @@ public class GameControllerScript : MonoBehaviour {
                             GameObject.Find("DialogueManager").GetComponent<DialogueManager>().SetDialogueScene(m_currentCase.m_szCutsceneName);
                     }
                     break;
-            }
-        }
-        if (m_CurrentSceneName == "GameTemplate")
-        {
-            GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
-            switch (gms.m_CurrentState)
-            {
-                case GameManagerScript.CURRENT__STATE.PLAYING:
+                case "CaseScene":
                     {
-                        //if (gms.m_NumberOfSuspiciousObjects == gms.m_NumberOfSuspiciousObjectsFound)
-                        //{
-                        //    // Load what the victim did wrong
-                        //    gms.LoadWhatTheVictimHadDoneWrong(m_DifficultySelected);
-                        //}
-                    }
-                    break;
-                case GameManagerScript.CURRENT__STATE.VICTIM_DONE_WRONG:
-                    {
-                        //if (gms.m_NumberOfWrongObjectsLeft == 0)
-                        //{
-                        //    gms.LoadPrevention(m_DifficultySelected);
-                        //}
-                    }
-                    break;
-                case GameManagerScript.CURRENT__STATE.PREVENTION:
-                    {
-                        //if (gms.m_NumberOfPreventionsLeft == 0)
-                        //{
-                        //    gms.ClickQuit();
-                        //    SceneManager.LoadScene("Mainmenu");
-                        //}
+                        if (m_currentCase != null)
+                            GameObject.Find("CaseSceneManager").GetComponent<CaseSceneManager>().SetCaseScene(m_currentCase);
                     }
                     break;
             }
         }
+        //if (m_CurrentSceneName == "GameTemplate")
+        //{
+        //    GameManagerScript gms = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+        //    switch (gms.m_CurrentState)
+        //    {
+        //        case GameManagerScript.CURRENT__STATE.PLAYING:
+        //            {
+        //                if (gms.m_NumberOfSuspiciousObjects == gms.m_NumberOfSuspiciousObjectsFound)
+        //                {
+        //                    // Load what the victim did wrong
+        //                    gms.LoadWhatTheVictimHadDoneWrong(m_DifficultySelected);
+        //                }
+        //            }
+        //            break;
+        //        case GameManagerScript.CURRENT__STATE.VICTIM_DONE_WRONG:
+        //            {
+        //                if (gms.m_NumberOfWrongObjectsLeft == 0)
+        //                {
+        //                    gms.LoadPrevention(m_DifficultySelected);
+        //                }
+        //            }
+        //            break;
+        //        case GameManagerScript.CURRENT__STATE.PREVENTION:
+        //            {
+        //                if (gms.m_NumberOfPreventionsLeft == 0)
+        //                {
+        //                    gms.ClickQuit();
+        //                    SceneManager.LoadScene("Mainmenu");
+        //                }
+        //            }
+        //            break;
+        //    }
+        //}
     }
 
     #region Functions
@@ -196,6 +203,7 @@ public class GameControllerScript : MonoBehaviour {
 
         // Create multiple cases
         LoadAllCases();
+        m_nCasesActivated = 0;
         if (m_bFirstTimeLoadCases)
         {
             for (int i = 1; i <= m_CurrentSubThemes.Count; i++)
@@ -238,7 +246,8 @@ public class GameControllerScript : MonoBehaviour {
     {
         m_lCaseInfoList.Clear();
         m_lCaseInfoList.TrimExcess();
-        XmlReader reader = XmlReader.Create("Assets/XML/Case.xml");
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/Case", typeof(TextAsset));
+        XmlReader reader = new XmlTextReader(new StringReader(textAsset.text));
         while (reader.Read())
         {
             if (reader.IsStartElement("themes"))
@@ -264,13 +273,23 @@ public class GameControllerScript : MonoBehaviour {
                                 newCaseInfo.m_theme = currentTheme;
                                 newCaseInfo.m_szCutsceneName = reader.GetAttribute("cutscene");
 
+                                string path = reader.GetAttribute("background");
+                                newCaseInfo.m_background = Resources.Load<Sprite>(path);
+
                                 int maxNumOfCaseObjects = int.Parse(reader.GetAttribute("numOfObjects"));
                                 reader.Read();
                                 for (int k = 0; k < maxNumOfCaseObjects; k++)
                                 {
                                     if (reader.IsStartElement("caseObject"))
                                     {
-                                        newCaseInfo.AddObject((CaseObject.CASE_OBJECT_TYPE)System.Enum.Parse(typeof(CaseObject.CASE_OBJECT_TYPE), reader.GetAttribute("type")));
+                                        CaseObject newCaseObject = newCaseInfo.AddObject();
+                                        newCaseObject.m_name = reader.GetAttribute("name");
+                                        newCaseObject.m_eType = (CaseObject.CASE_OBJECT_TYPE)System.Enum.Parse(typeof(CaseObject.CASE_OBJECT_TYPE), reader.GetAttribute("type"));
+                                        newCaseObject.m_topOffset = float.Parse(reader.GetAttribute("topOffset"));
+                                        newCaseObject.m_bottomOffset = float.Parse(reader.GetAttribute("bottomOffset"));
+                                        newCaseObject.m_leftOffset = float.Parse(reader.GetAttribute("leftOffset"));
+                                        newCaseObject.m_rightOffset = float.Parse(reader.GetAttribute("rightOffset"));
+
                                         reader.ReadToNextSibling("caseObject");
                                     }
                                 }
@@ -291,7 +310,8 @@ public class GameControllerScript : MonoBehaviour {
     {
         m_lCaseList.Clear();
         m_lCaseList.TrimExcess();
-        XmlReader reader = XmlReader.Create("Assets/XML/Case.xml");
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/Case", typeof(TextAsset));
+        XmlReader reader = new XmlTextReader(new StringReader(textAsset.text));
         while (reader.Read())
         {
             if (reader.IsStartElement("themes"))
@@ -377,8 +397,8 @@ public class GameControllerScript : MonoBehaviour {
         // Set parent to respective slots
         newCase.transform.SetParent(parentSlot);
         // Add image
-        newCase.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Circle.png");
-
+        newCase.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Circle");
+        m_nCasesActivated++;
         // Set rect transform
         RectTransform rectTransform = newCase.GetComponent<RectTransform>();
         rectTransform.localScale = Vector3.one;

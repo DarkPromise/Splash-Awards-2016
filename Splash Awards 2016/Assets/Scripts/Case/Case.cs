@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 public class Case {
     public GameControllerScript.SUB_THEME m_theme = GameControllerScript.SUB_THEME.CYBER_BULLYING;
-    private List<CaseObject> m_lCaseObjects = new List<CaseObject>();
+    public List<CaseObject> m_lCaseObjects = new List<CaseObject>();
     public string m_szCutsceneName = null;
     public bool m_bActivated = false;
+    public Sprite m_background = null;
+    public bool m_bFirstTime = true;
+    public bool m_bCompleted = false;
 
     //public void Init(List<GameControllerScript.SUB_THEME> subthemes) 
     //{
@@ -34,9 +37,12 @@ public class Case {
     //    Debug.Log("Case Initialized");
     //}
 
-    public void AddObject(CaseObject.CASE_OBJECT_TYPE type)
+    public CaseObject AddObject()
     {
-        m_lCaseObjects.Add(new CaseObject(type));
+        CaseObject newCaseObject = new CaseObject();
+        m_lCaseObjects.Add(newCaseObject);
+
+        return newCaseObject;
     }
 
     ~Case()

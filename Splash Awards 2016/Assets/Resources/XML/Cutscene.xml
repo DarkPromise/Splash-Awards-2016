@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<cutscenes numOfCutscenes = "1">
+  <cutscene name = "1" numOfImages = "3">
+    <image>Sprites/Backgrounds/Background_1</image>
+    <image>Sprites/Characters/MC</image>
+    <image>Sprites/Characters/Girl_2</image>
+  </cutscene>
+</cutscenes>

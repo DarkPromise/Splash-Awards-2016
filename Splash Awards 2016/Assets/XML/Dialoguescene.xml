@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-
-<dialogueScenes numOfDialogueScenes = "1">
-  <dialogueScene name = "1" background = "Assets/Sprites/Backgrounds/Background_1.png" characterLeft = "Assets/Sprites/Characters/MC.png" characterRight = "Assets/Sprites/Characters/Girl_2.png" numOfDialogues = "3">
-    <dialogue>Dialogue 1</dialogue>
-    <dialogue>Dialogue 2</dialogue>
-    <dialogue>Dialogue 3</dialogue>
-  </dialogueScene>
-</dialogueScenes>

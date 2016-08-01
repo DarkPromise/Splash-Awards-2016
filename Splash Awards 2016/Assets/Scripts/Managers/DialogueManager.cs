@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
-using UnityEditor;
+using System.IO;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -22,7 +22,8 @@ public class DialogueManager : MonoBehaviour
 
     public void SetDialogueScene(string name)
     {
-        XmlReader reader = XmlReader.Create("Assets/XML/Dialoguescene.xml");
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/Dialoguescene", typeof(TextAsset));
+        XmlReader reader = new XmlTextReader(new StringReader(textAsset.text));
         while (reader.Read())
         {
             if (reader.IsStartElement("dialogueScenes"))
@@ -34,13 +35,8 @@ public class DialogueManager : MonoBehaviour
                     if (reader.IsStartElement("dialogueScene") && reader.GetAttribute("name") == name)
                     {
                         // Load background
-                        Canvas.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("background"));
-
-                        // Load Character Left
-                        Canvas.transform.FindChild("Characters").FindChild("CharacterLeft").GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("characterLeft"));
-
-                        // Load Character Right
-                        Canvas.transform.FindChild("Characters").FindChild("CharacterRight").GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(reader.GetAttribute("characterRight"));
+                        string path = reader.GetAttribute("background");
+                        Canvas.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
 
                         // Get Dialogues
                         List<string> dialogueList = new List<string>();
@@ -61,6 +57,28 @@ public class DialogueManager : MonoBehaviour
                         Canvas.transform.FindChild("DialogueBox").FindChild("Dialogue").GetComponent<DialogueScript>().textList = dialogueList;
                         Canvas.transform.FindChild("DialogueBox").FindChild("Dialogue").GetComponent<DialogueScript>().SetDialogue(0);
 
+                        for (int k = 0; k < 2; k++)
+                        {
+                            reader.Read();
+                            if (reader.IsStartElement("characterLeft"))
+                            {
+                                // Load Character Left
+                                Transform character = Canvas.transform.FindChild("Characters").FindChild("CharacterLeft");
+                                path = reader.GetAttribute("image");
+                                character.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
+                                RectTransform rectTransform = character.GetComponent<RectTransform>();
+                                rectTransform.sizeDelta = new Vector2(float.Parse(reader.GetAttribute("width")), float.Parse(reader.GetAttribute("height")));
+                            }
+                            if (reader.IsStartElement("characterRight"))
+                            {
+                                // Load Character Right
+                                Transform character = Canvas.transform.FindChild("Characters").FindChild("CharacterRight");
+                                path = reader.GetAttribute("image");
+                                character.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
+                                RectTransform rectTransform = character.GetComponent<RectTransform>();
+                                rectTransform.sizeDelta = new Vector2(float.Parse(reader.GetAttribute("width")), float.Parse(reader.GetAttribute("height")));
+                            }
+                        }
                         reader.Close();
                         return;
                     }

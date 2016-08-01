@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
-using UnityEditor;
+using System.IO;
 using UnityEngine.SceneManagement;
 
 
@@ -35,7 +35,8 @@ public class CutsceneManager : MonoBehaviour
 
     public void SetCutscene(string name)
     {
-        XmlReader reader = XmlReader.Create("Assets/XML/Cutscene.xml");
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/Cutscene", typeof(TextAsset));
+        XmlReader reader = new XmlTextReader(new StringReader(textAsset.text));
         while(reader.Read())
         {
            if(reader.IsStartElement("cutscenes"))
@@ -53,7 +54,9 @@ public class CutsceneManager : MonoBehaviour
                            reader.Read();
                            if (reader.IsStartElement("image"))
                            {
-                               spriteList.Add(AssetDatabase.LoadAssetAtPath<Sprite>(reader.ReadString()));
+                               string path = reader.ReadString();
+                               spriteList.Add(Resources.Load<Sprite>(path));
+
                            }
                        }
                        reader.Close();

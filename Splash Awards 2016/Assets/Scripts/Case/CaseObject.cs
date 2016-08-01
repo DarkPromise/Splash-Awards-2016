@@ -16,8 +16,14 @@ public class CaseObject {
         NUM_CO_TYPE
     };
 
-    private CASE_OBJECT_TYPE m_eType;
+    public CASE_OBJECT_TYPE m_eType;
     private List<string> m_lText;
+    public string m_name = null;
+    public bool m_bCompleted = false;
+    public float m_topOffset = 0.0f;
+    public float m_bottomOffset = 0.0f;
+    public float m_leftOffset = 0.0f;
+    public float m_rightOffset = 0.0f;
 
     void Start()
     {
@@ -31,10 +37,10 @@ public class CaseObject {
     }
 
     // Constructor
-    public CaseObject(CASE_OBJECT_TYPE coType)
+    public CaseObject(string name, CASE_OBJECT_TYPE coType)
     {
         this.m_eType = coType;
-
+        m_name = name;
         switch (coType)
         {
             case CASE_OBJECT_TYPE.CO_CHATLOG:

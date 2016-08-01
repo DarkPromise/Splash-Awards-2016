@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<dialogueScenes numOfDialogueScenes = "1">
+  <dialogueScene name = "1" background = "Sprites/Backgrounds/Background_1" numOfDialogues = "3">
+    <dialogue>Dialogue 1</dialogue>
+    <dialogue>Dialogue 2</dialogue>
+    <dialogue>Dialogue 3</dialogue>
+    <characterLeft image = "Sprites/Characters/MC" width = "300" height = "750"/>
+    <characterRight image = "Sprites/Characters/Girl_2" width = "275" height = "675"/>
+  </dialogueScene>
+</dialogueScenes>

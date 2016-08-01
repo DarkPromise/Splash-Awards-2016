@@ -39,7 +39,7 @@ public class DialogueScript : MonoBehaviour {
         else
         {
             // Change scene
-            SceneManager.LoadScene("GameTemplate");
+            SceneManager.LoadScene("CaseScene");
         }
     }
     #endregion
