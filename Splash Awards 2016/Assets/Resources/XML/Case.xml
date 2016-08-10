@@ -2,53 +2,93 @@
 
 <themes numOfThemes = "5">
   <theme name = "CYBER_BULLYING" numOfCases = "2">
-    <case name = "Case1_CYBER_BULLYING" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case1_CYBER_BULLYING" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
-    <case name = "Case2_CYBER_BULLYING" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case2_CYBER_BULLYING" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
   </theme>
   <theme name = "MAKING_FRIENDS_ONLINE" numOfCases = "2">
-    <case name = "Case1_MAKING_FRIENDS_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case1_MAKING_FRIENDS_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
-    <case name = "Case2_MAKING_FRIENDS_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case2_MAKING_FRIENDS_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
   </theme>
   <theme name = "SHARING_PERSONAL_INFORMATION_ONLINE" numOfCases = "2">
-    <case name = "Case1_SHARING_PERSONAL_INFORMATION_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case1_SHARING_PERSONAL_INFORMATION_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
-    <case name = "Case2_SHARING_PERSONAL_INFORMATION_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case2_SHARING_PERSONAL_INFORMATION_ONLINE" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
   </theme>
   <theme name = "CYBER_SECURITY" numOfCases = "2">
-    <case name = "Case1_CYBER_SECURITY" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case1_CYBER_SECURITY" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
-    <case name = "Case2_CYBER_SECURITY" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case2_CYBER_SECURITY" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
   </theme>
   <theme name = "HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION" numOfCases = "2">
-    <case name = "Case1_HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case1_HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_CHATLOG" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_EMAIL" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
-    <case name = "Case2_HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION" cutscene = "1" background = "Sprites/Backgrounds/Room_1" numOfObjects = "2">
-      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550"/>
-      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525"/>
+    <case name = "Case2_HARMFUL_CONTENT_AND_INTERNET_OR_GAMING_ADDICTION" cutscene = "1" background = "Sprites/Backgrounds/Room_1" mcqScene = "1" numOfObjects = "2">
+      <caseObject name = "object1" type = "CO_SOCIALMEDIA" topOffset = "-200" bottomOffset = "150" leftOffset = "50" rightOffset = "-550" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
+      <caseObject name = "object2" type = "CO_WEBHISTORY" topOffset = "-60" bottomOffset = "350" leftOffset = "165" rightOffset = "-525" numOfScenes = "1">
+        <scene>Minigame1</scene>
+      </caseObject>
     </case>
   </theme>
 </themes>

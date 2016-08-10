@@ -10,6 +10,8 @@ public class Case {
     public Sprite m_background = null;
     public bool m_bFirstTime = true;
     public bool m_bCompleted = false;
+    public CaseObject m_currentCaseObject = null;
+    public string m_MCQSceneName = null;
 
     //public void Init(List<GameControllerScript.SUB_THEME> subthemes) 
     //{

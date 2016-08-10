@@ -24,6 +24,8 @@ public class CaseObject {
     public float m_bottomOffset = 0.0f;
     public float m_leftOffset = 0.0f;
     public float m_rightOffset = 0.0f;
+    public List<string> m_scenesName = new List<string>();
+    public int m_currentSceneIndex = -1;
 
     void Start()
     {

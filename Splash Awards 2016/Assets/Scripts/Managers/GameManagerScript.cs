@@ -1,46 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameManagerScript : MonoBehaviour {
+public class GameManagerScript : MonoBehaviour
+{
+    public GameObject AllCasesSolved = null;
     public GameObject Guidebook = null;
     public GameObject CaseFiles = null;
-    [HideInInspector]
-    public int m_NumberOfSuspiciousObjects = 0;
-    [HideInInspector]
-    public int m_NumberOfSuspiciousObjectsFound;
-    [HideInInspector]
-    public int m_NumberOfWrongObjectsLeft = 0;
-    [HideInInspector]
-    public int m_NumberOfPreventionsLeft = 0;
 
     private Transform slotSelected = null;
     private float timeToFullyExpandSlot = 0.25f;
     private Vector2 speedToFullyExpandSlot = new Vector2();
     private Vector2 speedToCenter = new Vector2();
 
+    private float fadingTime = 0.5f;
+
     public enum CURRENT_STATE
     {
         PLAYING = 0,
         OPENING_CASE,
         OPENED_CASE,
-        //VICTIM_DONE_WRONG,
-        //PREVENTION
+        ALL_CASES_SOLVED,
     }
     [HideInInspector]
     public CURRENT_STATE m_CurrentState = CURRENT_STATE.PLAYING;
 
-    //private enum DIALOGUE_PHASE
-    //{
-    //    NOT_DISLPAYED = 0,
-    //    DISPLAYING,
-    //    DISPLAYED,
-    //    HIDING
-    //}
-    //private DIALOGUE_PHASE m_CurrentDialoguePhase;
-
     void Awake()
     {
+        if (AllCasesSolved == null)
+        {
+            Debug.LogAssertion("No AllCasesSolved");
+        }
         if (Guidebook == null)
         {
             Debug.LogAssertion("No Guide Book");
@@ -53,8 +44,8 @@ public class GameManagerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        //m_CurrentDialoguePhase = DIALOGUE_PHASE.NOT_DISLPAYED;
-        m_NumberOfSuspiciousObjectsFound = 0;
+        Text completed = AllCasesSolved.GetComponent<Text>();
+        completed.CrossFadeAlpha(0.0f, 0.0f, false);
 	}
 
     #region Update
@@ -115,105 +106,53 @@ public class GameManagerScript : MonoBehaviour {
                     }
                     break;
                 }
+            case CURRENT_STATE.PLAYING:
+                {
+                    bool allCasesSolved = true;
+                    for (int i = 0; i < GameControllerScript.Instance.m_lCaseInfoList.Count; i++)
+                    {
+                        if (GameControllerScript.Instance.m_lCaseInfoList[i].m_bActivated && !GameControllerScript.Instance.m_lCaseInfoList[i].m_bCompleted)
+                        {
+                            allCasesSolved = false;
+                            break;
+                        }
+                    }
+                    if (allCasesSolved)
+                    {
+                        m_CurrentState = CURRENT_STATE.ALL_CASES_SOLVED;
+                        Text completed = AllCasesSolved.GetComponent<Text>();
+                        completed.CrossFadeAlpha(1.0f, fadingTime, false);
+                    }
+                    break;
+                }
+            case CURRENT_STATE.ALL_CASES_SOLVED:
+                {
+                    if (fadingTime > 0.0f)
+                    {
+                        fadingTime -= Time.deltaTime;
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            Text completed = AllCasesSolved.GetComponent<Text>();
+                            completed.CrossFadeAlpha(1.0f, 0.0f, false);
+                            fadingTime = 0.0f;
+                        }
+                    }
+                    else
+                    {
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            ClickQuit();
+                            SceneManager.LoadScene("MainMenu");
+                        }
+                    }
+                    break;
+                }
         }
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    CastRay();
-        //}
     }
 
     #endregion
 
     #region Functions
-
-    void CastRay()
-    {
-        //switch (m_CurrentDialoguePhase)
-        //{
-        //    case DIALOGUE_PHASE.NOT_DISLPAYED:
-        //        {
-        //            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
-        //            switch(m_CurrentState)
-        //            {
-        //                case CURRENT__STATE.PLAYING:
-        //                    {
-        //                        if (hit)
-        //                        {
-                                    
-        //                        }
-        //                    }
-        //                    break;
-        //                case CURRENT__STATE.VICTIM_DONE_WRONG:
-        //                    {
-        //                        if (CaseFiles.activeSelf == true)
-        //                        {
-        //                            if (hit)
-        //                            {
-        //                                Debug.Log(hit.collider.gameObject.name);
-        //                                // Check each interactable objects whether which object had been hits
-        //                                foreach (Transform child in CaseFiles.transform.FindChild("Slots").transform)
-        //                                {
-        //                                    if (child.name == hit.collider.gameObject.name)
-        //                                    {
-        //                                        foreach (Transform item in child.transform)
-        //                                        {
-        //                                            if (item.GetComponent<InteractableScript>().wrong)
-        //                                            {
-        //                                                item.gameObject.SetActive(false);
-        //                                                m_NumberOfWrongObjectsLeft--;
-        //                                                break;
-        //                                            }
-        //                                        }
-        //                                        break;
-        //                                    }
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                    break;
-        //            }
-                    
-        //        }
-        //        break;
-        //    case DIALOGUE_PHASE.DISPLAYED:
-        //        {
-        //            m_CurrentDialoguePhase = DIALOGUE_PHASE.HIDING;
-        //        }
-        //        break;
-        //}
-    }
-
-    public void LoadPrevention(GameControllerScript.DIFFICULTY difficulty)
-    {
-        //m_CurrentState = CURRENT__STATE.PREVENTION;
-        //switch (difficulty)
-        //{
-        //    case GameControllerScript.DIFFICULTY.HARD:
-                CaseFiles.GetComponent<CaseFilesScript>().CloseCaseFiles();
-                Guidebook.GetComponent<GuideBookScript>().OpenGuideBook();
-                Guidebook.transform.FindChild("Close").gameObject.SetActive(false);
-        //        break;
-        //    default:
-        //        break;
-        //}
-    }
-
-    public void LoadWhatTheVictimHadDoneWrong(GameControllerScript.DIFFICULTY difficulty)
-    {
-        //m_CurrentState = CURRENT__STATE.VICTIM_DONE_WRONG;
-        //switch(difficulty)
-        //{
-        //    case GameControllerScript.DIFFICULTY.HARD:
-                CaseFiles.GetComponent<CaseFilesScript>().OpenCaseFiles();
-                CaseFiles.transform.FindChild("Background").gameObject.GetComponent<Collider2D>().enabled = false;
-                CaseFiles.transform.FindChild("Close").gameObject.SetActive(false);
-        //        break;
-        //    default:
-        //        break;
-        //}
-    }
-
 
     #region OnClick Functions
 
@@ -232,7 +171,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             for (int i = 0; i < GameControllerScript.Instance.m_lCaseList.Count; i++)
             {
-                if (GameControllerScript.Instance.m_lCaseList[i].name == slotSelected.GetChild(0).name)
+                if (GameControllerScript.Instance.m_lCaseList[i].name == slotSelected.GetChild(slotSelected.childCount - 1).name)
                 {
                     if (!GameControllerScript.Instance.m_lCaseInfoList[i].m_bCompleted)
                     {

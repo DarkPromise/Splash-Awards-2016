@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<mcqScenes numOfMCQScenes = "1">
+  <mcqScene name = "1" numOfChats = "3">
+    <chat text = "Has the problem been resolved?" isLeft = "false" gotMCQ = "false"/>
+    <chat text = "Yes it hase been" isLeft = "true" gotMCQ = "false"/>
+    <chat text = "How did it happen?" isLeft = "false" gotMCQ = "true">
+      <mcq question = "How did the virus end up in the computer?" numOfAnswers = "4">
+        <answer text = "Downloading of infected files" correct = "false"/>
+        <answer text = "Not having a firewall" correct = "false"/>
+        <answer text = "Opening an online doc" correct = "false"/>
+        <answer text = "Visiting an infected website" correct = "true"/>
+      </mcq>
+    </chat>
+  </mcqScene>
+</mcqScenes>

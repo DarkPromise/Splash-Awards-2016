@@ -102,6 +102,18 @@ public class GameControllerScript : MonoBehaviour {
                             GameObject.Find("CaseSceneManager").GetComponent<CaseSceneManager>().SetCaseScene(m_currentCase);
                     }
                     break;
+                case "Minigame1":
+                    {
+                        if (m_currentCase != null && m_currentCase.m_currentCaseObject != null)
+                            GameObject.Find("MinigameManager").GetComponent<MinigameManager>().SetCurrentCaseObject(m_currentCase.m_currentCaseObject);
+                    }
+                    break;
+                case "MCQScene":
+                    {
+                        if (m_currentCase != null && m_currentCase.m_MCQSceneName != null)
+                            GameObject.Find("MCQManager").GetComponent<MCQManager>().SetMCQScene(m_currentCase.m_MCQSceneName);
+                    }
+                    break;
             }
         }
         //if (m_CurrentSceneName == "GameTemplate")
@@ -206,10 +218,24 @@ public class GameControllerScript : MonoBehaviour {
         m_nCasesActivated = 0;
         if (m_bFirstTimeLoadCases)
         {
-            for (int i = 1; i <= m_CurrentSubThemes.Count; i++)
+            int i = 1;
+            for (i = 1; i <= m_CurrentSubThemes.Count; i++)
             {
                 // Add Random Case Component To Case
                 AddRandomCase(m_CurrentSubThemes[i - 1], slots.FindChild("Slot " + i.ToString()));
+            }
+
+            // If hard mode, fill all 12 slots
+            if (m_DifficultySelected == DIFFICULTY.HARD)
+            {
+                while (i <= 12 && i < m_lCaseInfoList.Count)
+                {
+                    // Add Random Case Component To Case
+                    if (AddRandomCase(m_CurrentSubThemes[Random.Range(0, m_CurrentSubThemes.Count - 1)], slots.FindChild("Slot " + i.ToString())))
+                    {
+                        i++;
+                    }
+                }
             }
             m_bFirstTimeLoadCases = false;
         }
@@ -272,6 +298,7 @@ public class GameControllerScript : MonoBehaviour {
                                 // Set case
                                 newCaseInfo.m_theme = currentTheme;
                                 newCaseInfo.m_szCutsceneName = reader.GetAttribute("cutscene");
+                                newCaseInfo.m_MCQSceneName = reader.GetAttribute("mcqScene");
 
                                 string path = reader.GetAttribute("background");
                                 newCaseInfo.m_background = Resources.Load<Sprite>(path);
@@ -290,6 +317,19 @@ public class GameControllerScript : MonoBehaviour {
                                         newCaseObject.m_leftOffset = float.Parse(reader.GetAttribute("leftOffset"));
                                         newCaseObject.m_rightOffset = float.Parse(reader.GetAttribute("rightOffset"));
 
+
+                                        int maxNumOfScenes = int.Parse(reader.GetAttribute("numOfScenes"));
+                                        reader.Read();
+                                        for (int l = 0; l < maxNumOfCaseObjects; l++)
+                                        {
+                                            if (reader.IsStartElement("scene"))
+                                            {
+                                                newCaseObject.m_scenesName.Add(reader.ReadString());
+                                                reader.ReadToNextSibling("scene");
+                                            }
+                                        }
+
+                                        reader.ReadOuterXml();
                                         reader.ReadToNextSibling("caseObject");
                                     }
                                 }
@@ -353,7 +393,7 @@ public class GameControllerScript : MonoBehaviour {
         }
     }
 
-    private void AddRandomCase(SUB_THEME theme, Transform parentSlot)
+    private bool AddRandomCase(SUB_THEME theme, Transform parentSlot)
     {
         int numOfCasesTOChoose = 0;
         int i = 0;
@@ -374,10 +414,12 @@ public class GameControllerScript : MonoBehaviour {
         Case newCaseInfo = null;
         int loopAmount = 0;
         do {
-            randomIndex = Random.Range(i + 1, i + numOfCasesTOChoose);
+            randomIndex = Random.Range(i, i + numOfCasesTOChoose);
             newCaseInfo = m_lCaseInfoList[randomIndex];
             if (loopAmount++ > 100)
-                break;
+            {
+                return false;
+            }
         } while (newCaseInfo.m_bActivated);
 
         // Set Active
@@ -385,10 +427,12 @@ public class GameControllerScript : MonoBehaviour {
 
         // Add case
         AddCase(randomIndex, parentSlot);
-    }
 
+        return true;
+    }
     private void AddCase(int index, Transform parentSlot)
     {
+        parentSlot.gameObject.SetActive(true);
         GameObject newCase = m_lCaseList[index];
 
         // Set Active
@@ -407,6 +451,23 @@ public class GameControllerScript : MonoBehaviour {
         rectTransform.anchorMin = Vector2.zero;
         rectTransform.anchorMax = Vector2.one;
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+        if(m_lCaseInfoList[index].m_bCompleted)
+        {
+            parentSlot.FindChild("Completed").SetAsLastSibling();
+        }
+    }
+
+    public void CurrentCaseObjectMoveToNextScene()
+    {
+        m_currentCase.m_currentCaseObject.m_currentSceneIndex++;
+        if (m_currentCase.m_currentCaseObject.m_currentSceneIndex == m_currentCase.m_currentCaseObject.m_scenesName.Count)
+        {
+            m_currentCase.m_currentCaseObject.m_bCompleted = true;
+            SceneManager.LoadScene("CaseScene");
+        }
+        else
+            SceneManager.LoadScene(m_currentCase.m_currentCaseObject.m_scenesName[m_currentCase.m_currentCaseObject.m_currentSceneIndex]);
     }
 
     #endregion
